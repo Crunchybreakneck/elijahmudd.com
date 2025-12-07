@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Menu</title>
+        <style>
+            body {
+                text-align: center;
+            }
+
+            #instructions {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Plot Board Game Based on Genghis Khan</h1>
+        <button><a href="game.html">Play Game</a></button>
+        <br><br>
+        <button onClick="showInstructions()">How to play</button>
+        <div id="instructions">
+            <h1>Instructions</h1>
+            <h2>On your turn</h2>
+            <p>On your turn, you must click the "start turn" button. Roll a die and move the number of spaces. If you pass a tribe, you must stop on it and roll a dice if you roll above 3, your tribes united counter will go up by one. If you roll a 3 or a 2, you will go backwards by one space. If you roll a 1, the tribe will kill you and you will immediately lose the game</p>
+            <h2>How the game ends</h2>
+            <p>If you get to the last space on the board in 10 or less turns, you win, but if you have more than 10 turns, you lose.</p>
+            <h2>How this game is related to Genghis Kahn</h2>
+            <p>Genghis Kahn started as a normal kid named Temujin, he had to bring together many Mongolian tribes to become well known and get the name Genghis Khan.</p>
+            <button onClick="hideInstructions()">Hide Instructions</button>
+        </div>
+
+        <script>
+            const myDiv = document.getElementById("instructions");
+            function showInstructions() {
+                myDiv.style.display = 'block';
+            }
+            function hideInstructions() {
+                myDiv.style.display = 'none';
+            }
+        </script>
+    </body>
+</html>

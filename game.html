@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book project game</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        td {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .pop {
+            animation: pop 0.25s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <h3 id="tribeText">Tribes United: 0 / 3</h3>
+    <h3 id="turn">Turn: 0</h3>
+    <h3 id="message"></h3>
+
+    <table id="board" border="1">
+        <tr id="boardRow"></tr>
+    </table>
+
+    <br>
+    <button id="button" onclick="turn()">Start turn</button>
+    <br><br>
+    <button onclick="window.location.reload()">Restart</button>
+    <br><br>
+    <a href="menu.html">Return to Menu</a>
+
+<script>
+    let tribeText = document.getElementById("tribeText");
+    let message = document.getElementById("message");
+    let button = document.getElementById("button");
+    let turnD = document.getElementById("turn");
+
+    const TOTAL_CELLS = 30;
+    const TRIBES = [5, 15, 25];
+    let unitedTribes = [false, false, false];
+
+    let position = 0;
+
+    let turnNum = 0;
+
+    // CREATE BOARD
+    const boardRow = document.getElementById("boardRow");
+    for (let i = 0; i < TOTAL_CELLS; i++) {
+        let td = document.createElement("td");
+        td.id = "cell" + i;
+        if (TRIBES.includes(i)) {
+            td.innerText = "Tribe " + (TRIBES.indexOf(i)+1);
+        } else {
+            td.innerText = i;
+        }
+        boardRow.appendChild(td);
+    }
+
+    // place player
+    document.getElementById("cell0").innerText = "🐎";
+
+    function roll() {
+        return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function resetCell(pos) {
+        let cell = document.getElementById("cell" + pos);
+        if (TRIBES.includes(pos)) {
+            cell.innerText = "Tribe " + (TRIBES.indexOf(pos)+1);
+        } else {
+            cell.innerText = pos;
+        }
+    }
+
+    function animateMove(target, callback) {
+        function step() {
+            resetCell(position);
+            position++;
+
+            let cell = document.getElementById("cell" + position);
+            cell.innerText = "🐎";
+            cell.classList.add("pop");
+            setTimeout(() => cell.classList.remove("pop"), 200);
+
+            if (position < target) {
+                setTimeout(step, 150);
+            } else {
+                callback();
+            }
+        }
+        step();
+    }
+
+    function turn() {
+        if (position >= TOTAL_CELLS - 1) {
+            message.innerText = "You've reached the end!";
+            return;
+        }
+
+        turnNum += 1;
+        turnD.textContent = "Turn: " + turnNum;
+
+
+        button.disabled = true;
+
+        let r = roll();
+        message.innerText = "You rolled a " + r;
+
+        let target = position + r;
+        if (target >= TOTAL_CELLS) target = TOTAL_CELLS - 1;
+
+        // Stop at first ununited tribe in path
+        for (let i = 0; i < TRIBES.length; i++) {
+            if (!unitedTribes[i] && position < TRIBES[i] && TRIBES[i] <= target) {
+                target = TRIBES[i];
+                break;
+            }
+        }
+
+        animateMove(target, () => {
+            // Check if landed on a tribe
+            let tribeIndex = TRIBES.indexOf(position);
+            if (tribeIndex !== -1 && !unitedTribes[tribeIndex]) {
+                let tribeRoll = roll();
+                message.innerText = "Trying to unite Tribe " + (tribeIndex+1) + "... rolled " + tribeRoll;
+                if (tribeRoll > 3) {
+                    unitedTribes[tribeIndex] = true;
+                    message.innerText = "Tribe " + (tribeIndex+1) + " united! " + "Rolled " + tribeRoll;
+                } else if (tribeRoll == 1) {
+                    message.innerText = "You rolled a 1, you were murdered by the tribe. You lose.";
+                    button.disabled = true; 
+                    return;
+                }else {
+                    message.innerText = "Alliance failed. " + "Rolled " + tribeRoll + " Moving back 1 cell.";
+                    resetCell(position);
+                    position = Math.max(0, position - 1);
+                    document.getElementById("cell" + position).innerText = "🐎";
+                }
+            }
+
+            tribeText.innerText = "Tribes United: " + unitedTribes.filter(Boolean).length + " / " + TRIBES.length;
+
+            button.disabled = false;
+        });
+
+        if (position == 29) {
+            button.disabled = true;
+            if (turnNum < 11) {
+            message.innerText = "You win!";
+            } else {
+                message.innerText = "You lose";
+            }
+        }
+    }
+</script>
+</body>
+</html>
