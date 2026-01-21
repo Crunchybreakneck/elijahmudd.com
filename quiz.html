@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      html {
+        height: 100%;
+      }
+
+      body {
+        height: 100%;
+      }
+
+      h2 {
+        font-size: 50px;
+      }
+      
+      #start {
+        padding: 10px;
+      }
+
+      #game {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+      }
+
+      #answers {
+        display: flex;
+        width: 100%;
+        height: 90%;
+      }
+
+      #answers button {
+        flex: 1;
+        font-size: 30px;
+      }
+
+      #score {
+        font-size: 30px;
+      }
+    </style>
+    <title>Weather education game</title>
+  </head>
+  <body>
+    <h3 id="score"></h3>
+    <div id="game">
+    <button id="start" onclick="showQuestion()">Start Game</button>
+    </div>
+    <script>
+        const container = document.getElementById("game");
+   const questions = [/*Question 1*/ '<h2>What is the difference between weather and climate?</h2>  <div id="answers"><button onclick="answer(true, 1)">Weather is the conditions over a short period of time, but climate is the conditions over a long period of time.</button> <button onclick="answer(false, 1)">Climate is the conditions over a short period of time, but weather is the conditions over a long period of time.</button></div>',
+    /*Question 2*/ '<h2>What causes wind currents?</h2> <div id="answers"> <button onclick="answer(false, 2)">Cold air rising and warm air falling.</button> <button onclick="answer(true, 2)">Warm air rising and cold air falling.</button> </div>',
+     /*Question 3*/ '<h2>Which has a higher albedo?</h2> <div id="answers"> <button onclick="answer(true, 3)">Fresh snow</button> <button onclick="answer(false, 3)">Grass</button> </div>',
+      /*Question 4*/ '<h2>What comes after evaporation in the water cycle?</h2> <div id="answers"> <button onclick="answer(true, 4)">Condensation</button> <button onclick="answer(false, 4)">Precipitation</button> </div>',
+       /*Question 5*/ '<h2>What is sublimation?</h2> <div id="answers"> <button onclick="answer(false, 5)">When water vapor turns into snow or ice.</button><button onclick="answer(true, 5)">When snow or ice turns directly into a gas.</button> </div>', 
+      /*Question 6*/ '<h2>What is evaporation?</h2> <div id="answers"> <button onclick="answer(true, 6)">When the sun heats up a liquid, causing it to turn into a gas.</button> <button onclick="answer(false, 6)">When the sun heats up ice, making it melt into water.</button> </div>',
+    /*Question 7*/ '<h2>What is condensation?</h2> <div id="answers"> <button onclick="answer(false, 7)">When water gets heated up, making it turn into a gas.</button> <button onclick="answer(true, 7)">When water particles get closer together, making water vapor turn into a liquid.</button> </div>'];
+   let score = 0;
+   let questionNum = 0;
+     let scoreDisplay = document.getElementById("score");
+scoreDisplay.textContent = "Score: " + score; 
+      function showQuestion() {
+if (questions.length != 0) {
+  let randomIndex = Math.floor(Math.random() * questions.length);
+  let selectedQuestion = questions[randomIndex];
+  container.innerHTML = selectedQuestion;
+  questionNum += 1;
+    questions.splice(randomIndex, 1);
+} else {
+  container.innerHTML = "<h2>You answered all of the question!</h2> + <button onclick='location.reload();'>Restart</button>";
+}
+    scoreDisplay.textContent = "Score: " + score + "/" + questionNum;
+}
+
+  function answer(correct, question) {
+    let suggestion;
+    if (question == 1) {
+      suggestion = "<h1>Remember that weather is the conditions over a short period of time and climate is the weather over a long period of time.</h1>";
+    } else if (question == 2) {
+      suggestion = "<h1>Look at this image.</h1> <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN2RRaJW67U53FGns3x1_cqc97LIyJiEu-wQ&s' <a href='https://www.mi-sci.org/'>Image source: Michigan science center</a>";
+    } else if (question == 3) {
+      suggestion = "<h1>Remember that the more light something reflects, the higher the albedo.</h1>";
+    } else if (question == 4) {
+      suggestion = "<h1>Look at this image.</h1> <img src='https://teachengineering.org/content/images/SquareImages/cub_water_cycle_unit_image.jpg'> <a href='https://www.teachengineering.org/'>Image source: Teach Engineering</a>";
+    } else if (question == 5) {
+      suggestion = "<h1>Remember that sublimation is when snow or ice turns directly into a gas.</h1>";
+    } else if (question == 6) {
+      suggestion = "<h1>Remember that evaporation is when liquid turns into a gas.</h1>";
+    } else if (question == 7) {
+      suggestion = "<h1>Remember that condensation is when water vapor turn into a liquid.</h1>";
+    }
+    if (correct === true) {
+      score += 1;
+      container.innerHTML = "<h2>Correct!</h2> <button onclick='showQuestion()'>Next Question</button>"
+    } else if (correct === false) {
+      container.innerHTML = "<h2>Incorrect</h2>" + suggestion + " <button onclick='showQuestion()'>Next Question</button>"
+    } else {
+      alert("An error occured please try again")
+    }
+  }
+
+
+      </script>
+  </body>
+</html>
